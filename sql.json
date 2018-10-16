@@ -1,0 +1,138 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "sqlServerName": {
+      "type": "string"
+    },
+    "sqlServerAdministratorLogin": {
+      "type": "string"
+    },
+    "sqlServerAdministratorLoginPassword": {
+      "type": "string"
+    },
+    "sqlElasticPoolName": {
+      "type": "string"
+    },
+    "sqlElasticPooledition": {
+      "type": "string"
+    },
+    "sqlElasticPoolDtu": {
+      "type": "string"
+    },
+    "sqlElasticPoolDatabaseDtuMin": {
+      "type": "string"
+    },
+    "sqlElasticPoolDatabaseDtuMax": {
+      "type": "string"
+    },
+    "sqlDatabase1Name": {
+      "type": "string"
+    },
+    "sqlDatabase2Name": {
+      "type": "string"
+    },
+    "sqlDatabase3Name": {
+      "type": "string"
+    },
+    "sqlDatabase4Name": {
+      "type": "string"
+    },
+    "sqlDatabasesCollation": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    }
+  },
+  "variables": {
+  },
+  "resources": [
+    {
+      "apiVersion": "2014-04-01-preview",
+      "type": "Microsoft.Sql/servers",
+      "location": "[parameters('location')]",
+      "name": "[parameters('sqlServerName')]",
+      "properties": {
+        "administratorLogin": "[parameters('sqlServerAdministratorLogin')]",
+        "administratorLoginPassword": "[parameters('sqlServerAdministratorLoginPassword')]",
+        "version": "12.0"
+      }
+    },
+    {
+      "apiVersion": "2014-04-01",
+      "type": "Microsoft.Sql/servers/elasticPools",
+      "dependsOn": [
+        "[concat('Microsoft.Sql/servers/', parameters('sqlServerName'))]"
+      ],
+      "location": "[parameters('location')]",
+      "name": "[concat(parameters('sqlServerName'), '/', parameters('sqlElasticPoolName'))]",
+      "properties": {
+        "edition": "[parameters('sqlElasticPooledition')]",
+        "dtu": "[parameters('sqlElasticPoolDtu')]",
+        "databaseDtuMin": "[parameters('sqlElasticPoolDatabaseDtuMin')]",
+        "databaseDtuMax": "[parameters('sqlElasticPoolDatabaseDtuMax')]"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases",
+      "name": "[concat(parameters('sqlserverName'), '/', parameters('sqlDatabase1Name'))]",
+      "location": "[parameters('location')]",
+      "apiVersion": "2014-04-01-preview",
+      "dependsOn": [
+        "[concat('Microsoft.Sql/servers/', parameters('sqlServerName'))]",
+        "[concat('Microsoft.Sql/servers/', parameters('sqlServerName') ,'/elasticpools/', parameters('sqlElasticPoolName'))]"
+      ],
+      "properties": {
+        "collation": "[parameters('sqlDatabasesCollation')]",
+        "requestedServiceObjectiveName": "ElasticPool",
+        "elasticPoolName": "[parameters('sqlElasticPoolName')]"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases",
+      "name": "[concat(parameters('sqlserverName'), '/', parameters('sqlDatabase2Name'))]",
+      "location": "[parameters('location')]",
+      "apiVersion": "2014-04-01-preview",
+      "dependsOn": [
+        "[concat('Microsoft.Sql/servers/', parameters('sqlServerName'))]",
+        "[concat('Microsoft.Sql/servers/', parameters('sqlServerName') ,'/elasticpools/', parameters('sqlElasticPoolName'))]"
+      ],
+      "properties": {
+        "collation": "[parameters('sqlDatabasesCollation')]",
+        "requestedServiceObjectiveName": "ElasticPool",
+        "elasticPoolName": "[parameters('sqlElasticPoolName')]"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases",
+      "name": "[concat(parameters('sqlserverName'), '/', parameters('sqlDatabase3Name'))]",
+      "location": "[parameters('location')]",
+      "apiVersion": "2014-04-01-preview",
+      "dependsOn": [
+        "[concat('Microsoft.Sql/servers/', parameters('sqlServerName'))]",
+        "[concat('Microsoft.Sql/servers/', parameters('sqlServerName') ,'/elasticpools/', parameters('sqlElasticPoolName'))]"
+      ],
+      "properties": {
+        "collation": "[parameters('sqlDatabasesCollation')]",
+        "requestedServiceObjectiveName": "ElasticPool",
+        "elasticPoolName": "[parameters('sqlElasticPoolName')]"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases",
+      "name": "[concat(parameters('sqlserverName'), '/', parameters('sqlDatabase4Name'))]",
+      "location": "[parameters('location')]",
+      "apiVersion": "2014-04-01-preview",
+      "dependsOn": [
+        "[concat('Microsoft.Sql/servers/', parameters('sqlServerName'))]",
+        "[concat('Microsoft.Sql/servers/', parameters('sqlServerName') ,'/elasticpools/', parameters('sqlElasticPoolName'))]"
+      ],
+      "properties": {
+        "collation": "[parameters('sqlDatabasesCollation')]",
+        "requestedServiceObjectiveName": "ElasticPool",
+        "elasticPoolName": "[parameters('sqlElasticPoolName')]"
+      }
+    }
+  ]
+}
